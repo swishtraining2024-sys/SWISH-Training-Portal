@@ -327,8 +327,11 @@
   <div id="passwordModal" class="imageModal" role="dialog" aria-modal="true">
     <div class="authCard">
       <span class="eyebrow">🔑 Change Password</span>
-      <h2>নতুন Password সেট করুন</h2>
+      <h2>Password পরিবর্তন করুন</h2>
+      <p class="small muted">Security reason-এর জন্য current password দিয়ে confirm করতে হবে।</p>
       <form id="passwordForm">
+        <label for="currentPasswordInput">Current password</label>
+        <input id="currentPasswordInput" type="password" autocomplete="current-password" placeholder="বর্তমান password লিখুন" required>
         <label for="newPasswordInput">New password</label>
         <input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="At least 6 characters" required>
         <label for="confirmPasswordInput">Confirm password</label>
@@ -571,13 +574,23 @@
     function closePasswordModal(){ const m=$('passwordModal'); if(m) m.classList.remove('show'); }
     async function changePassword(e){
       e.preventDefault();
+      if(!portalUser || !portalUser.email){ setPasswordMsg('Session পাওয়া যায়নি। আবার login করুন।', true); return; }
+      const current = $('currentPasswordInput').value;
       const p1=$('newPasswordInput').value, p2=$('confirmPasswordInput').value;
+      if(!current){ setPasswordMsg('Current password দিন।', true); return; }
       if(p1.length < 6){ setPasswordMsg('Password অন্তত ৬ character হতে হবে।', true); return; }
       if(p1 !== p2){ setPasswordMsg('Confirm password match করেনি।', true); return; }
-      const res = await supabaseClient.auth.updateUser({ password: p1 });
-      if(res.error){ setPasswordMsg('Password update failed: '+res.error.message, true); return; }
+      if(current === p1){ setPasswordMsg('New password current password-এর মতো রাখা যাবে না।', true); return; }
+      setPasswordMsg('Updating password...');
+      const reauth = await supabaseClient.auth.signInWithPassword({ email: portalUser.email, password: current });
+      if(reauth.error){ setPasswordMsg('Current password ভুল।', true); return; }
+      const res = await supabaseClient.auth.updateUser({ password: p1, current_password: current });
+      if(res.error){
+        const res2 = await supabaseClient.auth.updateUser({ password: p1 });
+        if(res2.error){ setPasswordMsg('Password update failed: '+res2.error.message, true); return; }
+      }
       setPasswordMsg('Password updated successfully.');
-      $('newPasswordInput').value=''; $('confirmPasswordInput').value='';
+      $('currentPasswordInput').value=''; $('newPasswordInput').value=''; $('confirmPasswordInput').value='';
       showToast('Password changed');
       setTimeout(closePasswordModal, 700);
     }
