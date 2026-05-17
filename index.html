@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#060818" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>57B Study Dashboard - No Access Popup iPhone Friendly</title>
+  <title>57B Training Portal - Employee Login</title>
   <style>
     :root{
       --bg:#050714;--panel:rgba(12,20,46,.78);--panel2:rgba(16,28,64,.90);--card:rgba(13,24,58,.72);
@@ -45,6 +45,25 @@
     @media(max-width:950px){.tileCollectionGrid{grid-template-columns:1fr 1fr}.tileCollectionMedia{height:260px}}
     @media(max-width:680px){.tileCollectionGrid{grid-template-columns:1fr}.tileCollectionMedia{height:330px}}
 
+    /* Supabase login + tracking */
+    .authGate{position:fixed;inset:0;z-index:9990;background:radial-gradient(circle at top left,rgba(105,247,255,.18),transparent 34%),rgba(3,7,20,.92);display:flex;align-items:center;justify-content:center;padding:18px}
+    .authGate.hidden{display:none!important}
+    .authCard{width:min(520px,100%);padding:24px;border-radius:28px;border:1px solid rgba(105,247,255,.24);background:linear-gradient(135deg,rgba(10,20,50,.96),rgba(14,10,38,.96));box-shadow:0 30px 100px rgba(0,0,0,.62)}
+    .authCard h2{margin:.35rem 0 0;font-size:32px}
+    .authCard label{display:block;margin:14px 0 6px;color:var(--soft);font-weight:700}
+    .authCard input{width:100%;padding:13px 14px;border-radius:16px;border:1px solid rgba(105,247,255,.28);background:rgba(255,255,255,.06);color:var(--text);font-size:16px}
+    .authCard .primary{width:100%;margin-top:16px;padding:13px 18px;font-size:16px}
+    .authMsg{margin-top:12px;color:var(--gold);min-height:20px}
+    .authBar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    .authBar .tag{margin-right:auto}
+    .authBar button{padding:9px 12px}
+    .adminOnly.hidden{display:none!important}
+    .adminTableWrap{overflow:auto;border:1px solid rgba(105,247,255,.16);border-radius:18px}
+    .adminTable{width:100%;border-collapse:collapse;min-width:900px}
+    .adminTable th,.adminTable td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;font-size:14px}
+    .adminTable th{color:var(--cyan);background:rgba(105,247,255,.06)}
+    .smallInput{max-width:240px}
+
   </style>
 
   <script>
@@ -62,8 +81,29 @@
   });
   </script>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 <body>
+
+  <div id="authGate" class="authGate">
+    <div class="authCard">
+      <span class="eyebrow">🔐 SWISH Training Portal</span>
+      <h2>Employee ID দিয়ে লগইন করুন</h2>
+      <p class="muted">Training dashboard access, study progress এবং Self Evaluation score এখন Supabase database-এ save হবে।</p>
+      <form id="loginForm">
+        <label for="employeeIdInput">Employee ID</label>
+        <input id="employeeIdInput" inputmode="numeric" autocomplete="username" placeholder="যেমন: 10015" required>
+        <label for="employeePasswordInput">Password</label>
+        <input id="employeePasswordInput" type="password" autocomplete="current-password" placeholder="Password লিখুন" required>
+        <button class="primary" type="submit">Login & Open Dashboard</button>
+      </form>
+      <p id="authMsg" class="authMsg small"></p>
+      <p class="small muted">Forgot password হলে Admin Supabase থেকে reset করবে।</p>
+    </div>
+  </div>
+
   <div id="accessGate" class="modalBackdrop hidden" aria-hidden="true">
     <div class="glass gate">
       <div style="position:relative;z-index:1">
@@ -91,6 +131,7 @@
             <a class="btn primary" href="#products">📚 Study Products</a>
             <a class="btn" href="#new-products">🆕 New Products</a>
             <a class="btn" href="#sale-evaluation">🧪 Product Self Evaluation</a><a class="btn" href="#tiles-study">🧱 Tiles Study</a><a class="btn" href="#tile-collection">🎨 Tiles Collection</a>
+            <div id="authUserBar" class="authBar"><span class="tag">Login required</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button></div>
             <button id="printBtn">🖨️ Print / Save PDF</button>
             <button id="resetStudyBtn" class="danger">↺ Reset Progress</button>
           </div>
@@ -115,7 +156,7 @@
         <select id="categoryFilter"><option value="">All Categories</option></select>
       </div>
       <div class="navrow">
-        <a class="btn" href="#guide">Study Guide</a><a class="btn" href="#new-products">New Products</a><a class="btn" href="#avatar-training">Avatar Profiling</a><a class="btn" href="#products">Products</a><a class="btn" href="#sale-evaluation">Product Self Evaluation</a><a class="btn" href="#tiles-study">Tiles Study</a><a class="btn" href="#tile-collection">Tiles Collection</a><a class="btn" href="#tiles-evaluation">Tiles Self Evaluation</a>
+        <a class="btn" href="#guide">Study Guide</a><a class="btn" href="#new-products">New Products</a><a class="btn" href="#avatar-training">Avatar Profiling</a><a class="btn" href="#products">Products</a><a class="btn adminNav hidden" href="#admin-report">Admin Report</a><a class="btn" href="#sale-evaluation">Product Self Evaluation</a><a class="btn" href="#tiles-study">Tiles Study</a><a class="btn" href="#tile-collection">Tiles Collection</a><a class="btn" href="#tiles-evaluation">Tiles Self Evaluation</a>
         <button id="expandBtn">Expand All</button><button id="collapseBtn">Collapse All</button><button id="randomBtn">Random Product</button><span class="btn" id="resultCount">0 showing</span>
       </div>
     </div>
@@ -141,6 +182,32 @@
       </div>
     </section>
 
+
+
+    <section id="admin-report" class="adminOnly hidden">
+      <div class="section-head">
+        <div>
+          <h2>Admin Report Dashboard</h2>
+          <p class="muted">Participant login, study progress এবং self evaluation score এখানে দেখা যাবে।</p>
+        </div>
+        <button id="refreshAdminReportBtn" class="primary">Refresh Report</button>
+      </div>
+      <div class="panel">
+        <div id="adminSummary" class="notice">Admin report loading...</div>
+        <div class="adminTableWrap">
+          <table class="adminTable">
+            <thead>
+              <tr>
+                <th>Employee ID</th><th>Name</th><th>Team</th><th>Role</th><th>Active</th>
+                <th>Product Study</th><th>Tiles Features</th><th>Tiles Collection</th>
+                <th>Best Product Score</th><th>Best Tiles Score</th><th>Last Login</th>
+              </tr>
+            </thead>
+            <tbody id="adminReportBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <section id="new-products">
       <div class="section-head"><div><h2>নতুন প্রোডাক্ট স্পটলাইট</h2><p class="muted">এই ৪টি product 57B training dashboard-এর নতুন product. Participant-রা study করার সময় এগুলো আলাদা priority দিয়ে revise করবে। Card-এ <strong>NEW PRODUCT</strong> badge থাকবে।</p></div><span class="tag newTag">4 New Products</span></div>
@@ -256,6 +323,23 @@
     </section>
   </main>
 
+
+  <div id="passwordModal" class="imageModal" role="dialog" aria-modal="true">
+    <div class="authCard">
+      <span class="eyebrow">🔑 Change Password</span>
+      <h2>নতুন Password সেট করুন</h2>
+      <form id="passwordForm">
+        <label for="newPasswordInput">New password</label>
+        <input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="At least 6 characters" required>
+        <label for="confirmPasswordInput">Confirm password</label>
+        <input id="confirmPasswordInput" type="password" autocomplete="new-password" placeholder="Confirm password" required>
+        <button class="primary" type="submit">Update Password</button>
+        <button type="button" id="closePasswordModalBtn">Cancel</button>
+      </form>
+      <p id="passwordMsg" class="authMsg small"></p>
+    </div>
+  </div>
+
   <div id="toast" class="toast">Copied</div>
   <div id="imageModal" class="imageModal" role="dialog" aria-modal="true">
     <button class="imageClose" id="imageClose">✕ Close</button>
@@ -327,7 +411,207 @@
     let currentEvaluation = [];
     let activeAvatar = 'Mid';
 
-    function save(){ state.done=[...done]; try{ safeStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+    const SUPABASE_URL = 'https://kgwxxroenyjkrmqxzkqv.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_lPOOGskjocZcUgJ1Dh5E2g_VRyv30BZ';
+    const TRAINING_EMAIL_DOMAIN = 'swish.training';
+    const supabaseClient = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+    let portalUser = null;
+    let portalProfile = null;
+    let progressSyncTimer = null;
+
+    function save(){ state.done=[...done]; try{ safeStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} scheduleRemoteProgressSync(); }
+
+    function empEmail(employeeId){
+      return String(employeeId || '').trim().toLowerCase().replace(/[^0-9a-z._-]/g,'') + '@' + TRAINING_EMAIL_DOMAIN;
+    }
+    function setAuthMsg(msg, danger){
+      const el=$('authMsg'); if(el){ el.textContent=msg || ''; el.style.color = danger ? 'var(--danger)' : 'var(--gold)'; }
+    }
+    function setPasswordMsg(msg, danger){
+      const el=$('passwordMsg'); if(el){ el.textContent=msg || ''; el.style.color = danger ? 'var(--danger)' : 'var(--gold)'; }
+    }
+    function authDisplayName(){
+      if(portalProfile && portalProfile.full_name) return portalProfile.full_name;
+      if(portalProfile && portalProfile.employee_id) return portalProfile.employee_id;
+      return 'Participant';
+    }
+    function authTeam(){
+      return (portalProfile && portalProfile.team) ? portalProfile.team : 'Sales';
+    }
+    function updateAuthBar(){
+      const bar=$('authUserBar');
+      if(!bar) return;
+      if(!portalProfile){
+        bar.innerHTML = '<span class="tag">Login required</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>';
+      } else {
+        bar.innerHTML = `<span class="tag success">Logged in: ${esc(portalProfile.employee_id || '')} • ${esc(authDisplayName())} • ${esc(authTeam())}</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>`;
+      }
+    }
+    function showDashboardForAuth(){
+      const gate=$('authGate'); if(gate) gate.classList.add('hidden');
+      updateAuthBar();
+      if(portalProfile){
+        state.participant = { name: authDisplayName(), team: authTeam() };
+        const pn=$('participantName'), pt=$('participantTeam'), tf=$('teamFilter');
+        if(pn) pn.value = authDisplayName();
+        if(pt) pt.value = authTeam();
+        if(tf) tf.value = authTeam();
+        updateParticipantLine();
+        renderProducts();
+      }
+      document.querySelectorAll('.adminOnly,.adminNav').forEach(function(el){
+        if(portalProfile && portalProfile.role === 'admin') el.classList.remove('hidden'); else el.classList.add('hidden');
+      });
+      if(portalProfile && portalProfile.role === 'admin') loadAdminReport();
+    }
+    function showLoginGate(){
+      const gate=$('authGate'); if(gate) gate.classList.remove('hidden');
+      updateAuthBar();
+    }
+    async function loadRemoteProgress(){
+      if(!supabaseClient || !portalUser) return;
+      const res = await supabaseClient.from('study_progress').select('*').eq('user_id', portalUser.id).maybeSingle();
+      if(res.error && res.error.code !== 'PGRST116'){ console.warn('progress load error', res.error); return; }
+      if(res.data){
+        done = new Set((res.data.product_done || []).map(String));
+        state.done=[...done];
+        try{ safeStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+        if(window.applyTilesRemoteProgress){ window.applyTilesRemoteProgress(res.data); }
+        else { window.portalProgressCache = res.data; }
+        updateProgress();
+        renderProducts();
+      } else {
+        scheduleRemoteProgressSync();
+      }
+    }
+    function scheduleRemoteProgressSync(){
+      if(!portalUser || !supabaseClient) return;
+      clearTimeout(progressSyncTimer);
+      progressSyncTimer = setTimeout(syncRemoteProgressNow, 650);
+    }
+    async function syncRemoteProgressNow(){
+      if(!portalUser || !supabaseClient) return;
+      const tile = window.getTilesProgress ? window.getTilesProgress() : {features:[], collections:[]};
+      const productTotal = DATA.products.length || 1;
+      const tileFeatureTotal = (window.TILE_FEATURE_COUNT || 9);
+      const tileCollectionTotal = (window.TILE_COLLECTION_COUNT || 11);
+      const payload = {
+        user_id: portalUser.id,
+        product_done: [...done],
+        tile_feature_done: tile.features || [],
+        tile_collection_done: tile.collections || [],
+        product_progress: Math.round((done.size / productTotal) * 100),
+        tile_feature_progress: Math.round(((tile.features || []).length / tileFeatureTotal) * 100),
+        tile_collection_progress: Math.round(((tile.collections || []).length / tileCollectionTotal) * 100),
+        updated_at: new Date().toISOString()
+      };
+      const res = await supabaseClient.from('study_progress').upsert(payload, { onConflict:'user_id' });
+      if(res.error) console.warn('progress sync error', res.error);
+    }
+    async function logActivity(eventType, details){
+      if(!portalUser || !supabaseClient) return;
+      try{ await supabaseClient.from('activity_logs').insert({ user_id: portalUser.id, event_type: eventType, details: details || {} }); }catch(e){}
+    }
+    async function recordEvaluationAttempt(type, score, total, answers){
+      if(!portalUser || !supabaseClient) return;
+      const payload = {
+        user_id: portalUser.id,
+        evaluation_type: type,
+        score: score,
+        total: total || 10,
+        percentage: Math.round((score / (total || 10)) * 100),
+        answers: answers || [],
+        created_at: new Date().toISOString()
+      };
+      const res = await supabaseClient.from('evaluation_attempts').insert(payload);
+      if(res.error){ console.warn('evaluation save error', res.error); showToast('Result local save হয়েছে, database save error'); }
+      else { showToast('Result database-এ saved'); }
+      if(portalProfile && portalProfile.role === 'admin') loadAdminReport();
+    }
+    window.portalSyncProgress = scheduleRemoteProgressSync;
+    window.portalRecordEvaluation = recordEvaluationAttempt;
+
+    async function handleSession(session){
+      if(!session || !session.user){ showLoginGate(); return; }
+      portalUser = session.user;
+      const res = await supabaseClient.from('profiles').select('*').eq('id', portalUser.id).maybeSingle();
+      if(res.error || !res.data){ setAuthMsg('Profile পাওয়া যায়নি। Admin-এর সাথে যোগাযোগ করুন।', true); await supabaseClient.auth.signOut(); showLoginGate(); return; }
+      portalProfile = res.data;
+      if(!portalProfile.is_active){ setAuthMsg('এই Employee ID inactive করা হয়েছে।', true); await supabaseClient.auth.signOut(); showLoginGate(); return; }
+      await logActivity('login', { employee_id: portalProfile.employee_id, team: portalProfile.team });
+      await loadRemoteProgress();
+      showDashboardForAuth();
+    }
+    async function initTrainingPortalAuth(){
+      if(!supabaseClient){ setAuthMsg('Supabase library load হয়নি। Internet connection check করুন।', true); showLoginGate(); return; }
+      const sessionRes = await supabaseClient.auth.getSession();
+      if(sessionRes.data && sessionRes.data.session) await handleSession(sessionRes.data.session); else showLoginGate();
+      supabaseClient.auth.onAuthStateChange(function(event, session){
+        if(event === 'SIGNED_OUT'){ portalUser=null; portalProfile=null; showLoginGate(); }
+        if(event === 'SIGNED_IN' && session) handleSession(session);
+      });
+    }
+    async function loginWithEmployeeId(e){
+      e.preventDefault();
+      if(!supabaseClient){ setAuthMsg('Supabase connection পাওয়া যায়নি।', true); return; }
+      const emp = $('employeeIdInput').value.trim();
+      const pass = $('employeePasswordInput').value;
+      if(!emp || !pass){ setAuthMsg('Employee ID এবং password দিন।', true); return; }
+      setAuthMsg('Logging in...');
+      const res = await supabaseClient.auth.signInWithPassword({ email: empEmail(emp), password: pass });
+      if(res.error){ setAuthMsg('Login failed: Employee ID বা password ভুল।', true); return; }
+      setAuthMsg('Login successful.');
+      await handleSession(res.data.session);
+    }
+    async function logoutPortal(){
+      if(supabaseClient) await supabaseClient.auth.signOut();
+      showToast('Logged out');
+    }
+    function openPasswordModal(){ setPasswordMsg(''); const m=$('passwordModal'); if(m) m.classList.add('show'); }
+    function closePasswordModal(){ const m=$('passwordModal'); if(m) m.classList.remove('show'); }
+    async function changePassword(e){
+      e.preventDefault();
+      const p1=$('newPasswordInput').value, p2=$('confirmPasswordInput').value;
+      if(p1.length < 6){ setPasswordMsg('Password অন্তত ৬ character হতে হবে।', true); return; }
+      if(p1 !== p2){ setPasswordMsg('Confirm password match করেনি।', true); return; }
+      const res = await supabaseClient.auth.updateUser({ password: p1 });
+      if(res.error){ setPasswordMsg('Password update failed: '+res.error.message, true); return; }
+      setPasswordMsg('Password updated successfully.');
+      $('newPasswordInput').value=''; $('confirmPasswordInput').value='';
+      showToast('Password changed');
+      setTimeout(closePasswordModal, 700);
+    }
+    async function loadAdminReport(){
+      if(!portalProfile || portalProfile.role !== 'admin') return;
+      const body=$('adminReportBody'), summary=$('adminSummary');
+      if(summary) summary.textContent='Loading admin report...';
+      const [profilesRes, progressRes, evalRes, logRes] = await Promise.all([
+        supabaseClient.from('profiles').select('id,employee_id,email,full_name,team,role,is_active,created_at'),
+        supabaseClient.from('study_progress').select('*'),
+        supabaseClient.from('evaluation_attempts').select('user_id,evaluation_type,score,total,created_at').order('created_at', {ascending:false}),
+        supabaseClient.from('activity_logs').select('user_id,event_type,created_at').eq('event_type','login').order('created_at', {ascending:false})
+      ]);
+      if(profilesRes.error){ if(summary) summary.textContent='Admin report error: '+profilesRes.error.message; return; }
+      const progressByUser = {};
+      (progressRes.data || []).forEach(function(p){ progressByUser[p.user_id]=p; });
+      const best = {};
+      (evalRes.data || []).forEach(function(e){
+        const key=e.user_id+'_'+e.evaluation_type;
+        if(!best[key] || e.score > best[key].score) best[key]=e;
+      });
+      const lastLogin = {};
+      (logRes.data || []).forEach(function(l){ if(!lastLogin[l.user_id]) lastLogin[l.user_id]=l.created_at; });
+      if(body){
+        body.innerHTML = (profilesRes.data || []).map(function(p){
+          const pr=progressByUser[p.id] || {};
+          const prod=best[p.id+'_product'];
+          const tiles=best[p.id+'_tiles'];
+          return `<tr><td>${esc(p.employee_id || '')}</td><td>${esc(p.full_name || '')}</td><td>${esc(p.team || '')}</td><td>${esc(p.role || '')}</td><td>${p.is_active?'Yes':'No'}</td><td>${pr.product_progress || 0}%</td><td>${pr.tile_feature_progress || 0}%</td><td>${pr.tile_collection_progress || 0}%</td><td>${prod ? esc(prod.score+'/'+prod.total) : '–'}</td><td>${tiles ? esc(tiles.score+'/'+tiles.total) : '–'}</td><td>${lastLogin[p.id] ? new Date(lastLogin[p.id]).toLocaleString() : '–'}</td></tr>`;
+        }).join('');
+      }
+      if(summary) summary.textContent = `${(profilesRes.data||[]).length} users • ${(evalRes.data||[]).length} evaluation attempts`;
+    }
+
     function unique(arr){ return [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
     function categoryLabel(p){ return p.category || p.name || 'Other'; }
     function avatarText(p){ return [p.avatar_fit, ...(p.pitches||[]).map(x=>x.avatar)].join(' | '); }
@@ -469,6 +753,7 @@
       const team = state.participant.team || 'Sales';
       if(!state.best || score > state.best.score) state.best = {score, pct, date: now.toISOString(), name, team};
       save(); updateProgress();
+      if(window.portalRecordEvaluation){ window.portalRecordEvaluation('product', score, 10, currentEvaluation.map(function(q,i){ return {question:q.q, selected:answers[i], correct:q.answer, model:q.model || '', type:'product'}; })); }
       const review = currentEvaluation.map((q,i)=>{
         const ok = answers[i]===q.answer;
         return `<div class="reviewItem"><b>${q.no}. ${esc(q.q)}</b><p class="${ok?'correct':'wrong'}">Your answer: ${esc(q.options[answers[i]])} ${ok?'✓':'✗'}</p><p><strong>Correct:</strong> ${esc(q.options[q.answer])}</p><p class="small muted">${esc(q.explain)}</p></div>`;
@@ -518,6 +803,15 @@
 
     populateFilters(); renderGuide(); renderProducts();
     if($('accessGate')) $('accessGate').classList.add('hidden');
+    if($('loginForm')) $('loginForm').addEventListener('submit', loginWithEmployeeId);
+    document.addEventListener('click', function(e){
+      if(e.target && e.target.id === 'logoutBtn') logoutPortal();
+      if(e.target && e.target.id === 'changePasswordBtn') openPasswordModal();
+      if(e.target && e.target.id === 'closePasswordModalBtn') closePasswordModal();
+      if(e.target && e.target.id === 'refreshAdminReportBtn') loadAdminReport();
+    });
+    if($('passwordForm')) $('passwordForm').addEventListener('submit', changePassword);
+    initTrainingPortalAuth();
   </script>
 
   <script>
@@ -548,7 +842,17 @@
     let currentTilesEval = [];
     const $t = id => document.getElementById(id);
     const escT = s => String(s == null ? '' : s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-    const saveTiles = () => { tileState.features=[...tileFeatureDone]; tileState.collections=[...tileCollectionDone]; try{ tileStorage.setItem(TILE_KEY, JSON.stringify(tileState)); }catch(e){} };
+    window.TILE_FEATURE_COUNT = TILE_FEATURES.length;
+    window.TILE_COLLECTION_COUNT = TILE_COLLECTIONS.length;
+    const saveTiles = () => { tileState.features=[...tileFeatureDone]; tileState.collections=[...tileCollectionDone]; try{ tileStorage.setItem(TILE_KEY, JSON.stringify(tileState)); }catch(e){}; if(window.portalSyncProgress) window.portalSyncProgress(); };
+    window.getTilesProgress = function(){ return {features:[...tileFeatureDone], collections:[...tileCollectionDone]}; };
+    window.applyTilesRemoteProgress = function(row){ 
+      tileFeatureDone = new Set((row && row.tile_feature_done) || []); 
+      tileCollectionDone = new Set((row && row.tile_collection_done) || []);
+      tileState.features=[...tileFeatureDone]; tileState.collections=[...tileCollectionDone];
+      try{ tileStorage.setItem(TILE_KEY, JSON.stringify(tileState)); }catch(e){}
+      renderTileFeatures(); renderTileCollections(); updateTilesProgress();
+    };
     const shuffleTiles = arr => [...arr].sort(()=>Math.random()-.5);
     function participantName(){ const el=document.getElementById('participantName'); return (el && el.value.trim()) || 'Participant'; }
     function participantTeam(){ const el=document.getElementById('participantTeam'); return (el && el.value) || 'Sales'; }
@@ -604,6 +908,7 @@
       const now=new Date(), name=participantName(), team=participantTeam();
       if(!tileState.best || score>tileState.best.score) tileState.best={score,date:now.toISOString(),name,team};
       saveTiles(); updateTilesProgress();
+      if(window.portalRecordEvaluation){ window.portalRecordEvaluation('tiles', score, 10, currentTilesEval.map(function(q,i){ return {question:q.q, selected:answers[i], correct:q.answer, type:'tiles'}; })); }
       const status = score>=8?'Excellent':score>=6?'Good / Pass':'Needs Revision';
       const review=currentTilesEval.map((q,i)=>{ const ok=answers[i]===q.answer; return `<div class="reviewItem"><b>${q.no}. ${escT(q.q)}</b><p class="${ok?'correct':'wrong'}">Your answer: ${escT(q.options[answers[i]])} ${ok?'✓':'✗'}</p><p><strong>Correct:</strong> ${escT(q.options[q.answer])}</p><p class="small muted">${escT(q.explain)}</p></div>`; }).join('');
       const result=$t('tilesResultCard'); result.style.display='block';
@@ -627,6 +932,7 @@ Pitch: ${t.pitch}`).then(()=>window.showToast&&showToast('Tile design pitch copi
 });
     const s1=$t('startTilesEvalBtn'), s2=$t('retakeTilesEvalBtn'); if(s1) s1.addEventListener('click', startTilesEvaluation); if(s2) s2.addEventListener('click', startTilesEvaluation);
     renderTileFeatures(); renderTileCollections(); updateTilesProgress();
+    if(window.portalProgressCache && window.applyTilesRemoteProgress){ window.applyTilesRemoteProgress(window.portalProgressCache); }
   })();
   </script>
 
