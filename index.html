@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#060818" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>57B Training Portal - Employee Login</title>
+  <title>57B Training Portal - Employee Login - Password Visibility</title>
   <style>
     :root{
       --bg:#050714;--panel:rgba(12,20,46,.78);--panel2:rgba(16,28,64,.90);--card:rgba(13,24,58,.72);
@@ -64,6 +64,12 @@
     .adminTable th{color:var(--cyan);background:rgba(105,247,255,.06)}
     .smallInput{max-width:240px}
 
+  
+    .passwordWrap{position:relative;display:block}
+    .passwordWrap input{padding-right:58px!important}
+    .passwordEye{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:42px;height:38px;border-radius:12px!important;padding:0!important;margin:0!important;display:flex;align-items:center;justify-content:center;background:rgba(105,247,255,.10)!important;border:1px solid rgba(105,247,255,.30)!important;color:var(--text)!important;box-shadow:none!important;font-size:16px!important;line-height:1!important}
+    .passwordEye:focus{outline:2px solid rgba(105,247,255,.45);outline-offset:2px}
+
   </style>
 
   <script>
@@ -96,7 +102,7 @@
         <label for="employeeIdInput">Employee ID</label>
         <input id="employeeIdInput" inputmode="numeric" autocomplete="username" placeholder="যেমন: 10015" required>
         <label for="employeePasswordInput">Password</label>
-        <input id="employeePasswordInput" type="password" autocomplete="current-password" placeholder="Password লিখুন" required>
+        <div class="passwordWrap"><input id="employeePasswordInput" type="password" autocomplete="current-password" placeholder="Password লিখুন" required><button type="button" class="passwordEye" data-toggle-password="employeePasswordInput" aria-label="Show password" title="Show password">👁</button></div>
         <button class="primary" type="submit">Login & Open Dashboard</button>
       </form>
       <p id="authMsg" class="authMsg small"></p>
@@ -331,11 +337,11 @@
       <p class="small muted">Security reason-এর জন্য current password দিয়ে confirm করতে হবে।</p>
       <form id="passwordForm">
         <label for="currentPasswordInput">Current password</label>
-        <input id="currentPasswordInput" type="password" autocomplete="current-password" placeholder="বর্তমান password লিখুন" required>
+        <div class="passwordWrap"><input id="currentPasswordInput" type="password" autocomplete="current-password" placeholder="বর্তমান password লিখুন" required><button type="button" class="passwordEye" data-toggle-password="currentPasswordInput" aria-label="Show password" title="Show password">👁</button></div>
         <label for="newPasswordInput">New password</label>
-        <input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="At least 6 characters" required>
+        <div class="passwordWrap"><input id="newPasswordInput" type="password" autocomplete="new-password" placeholder="At least 6 characters" required><button type="button" class="passwordEye" data-toggle-password="newPasswordInput" aria-label="Show password" title="Show password">👁</button></div>
         <label for="confirmPasswordInput">Confirm password</label>
-        <input id="confirmPasswordInput" type="password" autocomplete="new-password" placeholder="Confirm password" required>
+        <div class="passwordWrap"><input id="confirmPasswordInput" type="password" autocomplete="new-password" placeholder="Confirm password" required><button type="button" class="passwordEye" data-toggle-password="confirmPasswordInput" aria-label="Show password" title="Show password">👁</button></div>
         <button class="primary" type="submit">Update Password</button>
         <button type="button" id="closePasswordModalBtn">Cancel</button>
       </form>
@@ -963,6 +969,33 @@ Pitch: ${t.pitch}`).then(()=>window.showToast&&showToast('Tile design pitch copi
     tuneImages();
     document.addEventListener('click', function(){ setTimeout(tuneImages, 80); }, true);
     window.addEventListener('load', tuneImages);
+  })();
+  </script>
+
+
+  <script>
+  // Password visibility toggle for login and change-password forms
+  (function(){
+    function findToggleButton(target){
+      while(target && target !== document){
+        if(target.getAttribute && target.getAttribute('data-toggle-password')) return target;
+        target = target.parentNode;
+      }
+      return null;
+    }
+    document.addEventListener('click', function(e){
+      var btn = findToggleButton(e.target);
+      if(!btn) return;
+      e.preventDefault();
+      var input = document.getElementById(btn.getAttribute('data-toggle-password'));
+      if(!input) return;
+      var hidden = input.getAttribute('type') === 'password';
+      input.setAttribute('type', hidden ? 'text' : 'password');
+      btn.textContent = hidden ? '🙈' : '👁';
+      btn.setAttribute('aria-label', hidden ? 'Hide password' : 'Show password');
+      btn.setAttribute('title', hidden ? 'Hide password' : 'Show password');
+      try { input.focus({preventScroll:true}); } catch(err) { input.focus(); }
+    }, false);
   })();
   </script>
 
