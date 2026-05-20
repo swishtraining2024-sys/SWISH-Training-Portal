@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#060818" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home - Phase 3A Admin Command Center - Phase 3A.1 Report Polish</title>
+  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home - Phase 3A Admin Command Center - Phase 3A.1 Report Polish - Phase 3A.2 UI Fix</title>
   <style>
     :root{
       --bg:#050714;--panel:rgba(12,20,46,.78);--panel2:rgba(16,28,64,.90);--card:rgba(13,24,58,.72);
@@ -751,8 +751,8 @@
     function updateAuthBar(){
       const bar=$('authUserBar');
       const homeBadge=$('homeUserBadge');
-      const authMeta = portalProfile ? [portalProfile.employee_id || '', authDisplayName(), portalProfile.designation || '', portalProfile.wing || authTeam()].filter(Boolean).map(esc).join(' • ') : '';
-      const label = portalProfile ? `Logged in: ${authMeta}` : 'Login required';
+      const authMetaPlain = portalProfile ? [portalProfile.employee_id || '', authDisplayName(), portalProfile.designation || '', portalProfile.wing || authTeam()].filter(Boolean).join(' • ') : '';
+      const label = portalProfile ? `Logged in: ${authMetaPlain}` : 'Login required';
       if(bar){
         if(!portalProfile){
           bar.innerHTML = '<span class="tag">Login required</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>';
@@ -782,7 +782,7 @@
         const combined = Math.round((((tp.features || []).length + (tp.collections || []).length) / (fTotal + cTotal)) * 100);
         const ht=$('homeTilesProgress'); if(ht) ht.textContent = combined + '%';
       }
-      const bp=$('homeBestProductScore'); if(bp) bp.textContent = state.best ? (state.best.score + '/' + state.best.total) : '–';
+      const bp=$('homeBestProductScore'); if(bp) bp.textContent = state.best ? (state.best.score + '/' + (state.best.total || 10)) : '–';
       const bt=$('homeBestTilesScore'); if(bt) bt.textContent = window.tilesBestScoreText ? window.tilesBestScoreText() : '–';
       const wn=$('homeWelcomeName'), wm=$('homeWelcomeMeta');
       if(wn && portalProfile) wn.textContent = authDisplayName();
