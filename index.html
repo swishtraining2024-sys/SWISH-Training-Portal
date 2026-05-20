@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#060818" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home - Phase 3A Admin Command Center</title>
+  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home - Phase 3A Admin Command Center - Phase 3A.1 Report Polish</title>
   <style>
     :root{
       --bg:#050714;--panel:rgba(12,20,46,.78);--panel2:rgba(16,28,64,.90);--card:rgba(13,24,58,.72);
@@ -148,6 +148,22 @@
     @media(max-width:980px){.adminKpiGrid{grid-template-columns:repeat(2,1fr)}.adminConsignmentGrid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:620px){.adminKpiGrid,.adminConsignmentGrid{grid-template-columns:1fr}.adminCommandTop{flex-direction:column;align-items:flex-start}}
 
+  
+    /* Phase 3A.1: report polish + personalized home */
+    .personalWelcome{display:inline-flex;flex-direction:column;gap:2px;margin:0 0 12px;padding:11px 14px;border-radius:20px;background:rgba(105,247,255,.09);border:1px solid rgba(105,247,255,.23);box-shadow:0 12px 38px rgba(0,0,0,.20)}
+    .personalWelcome span{font-size:11px;color:#78f7ff;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+    .personalWelcome b{font-size:18px;color:#fff;line-height:1.12}
+    .personalWelcome small{color:var(--muted);line-height:1.35}
+    .adminFilterBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 14px;padding:12px;border-radius:20px;background:rgba(255,255,255,.045);border:1px solid rgba(105,247,255,.14)}
+    .adminFilterBar label{display:flex;align-items:center;gap:8px;color:#dcecff;font-size:12px;font-weight:750}
+    .adminFilterBar select{min-width:150px;border-radius:14px;background:rgba(9,18,42,.88);color:#fff;border:1px solid rgba(105,247,255,.22);padding:10px}
+    .adminFilterBar button{border-radius:14px;padding:10px 12px}
+    .adminInsightGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 14px}
+    .adminInsight{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.052);border-radius:18px;padding:12px;min-height:82px}
+    .adminInsight b{display:block;color:#78f7ff;margin-bottom:6px}.adminInsight p{margin:0;color:#d9e8ff;font-size:12px;line-height:1.5}
+    .adminFollow{color:#ffd986!important}.adminRisk{color:#ff9eb5!important}.adminGood{color:#baffd4!important}
+    @media(max-width:780px){.adminInsightGrid{grid-template-columns:1fr}.adminFilterBar{align-items:stretch}.adminFilterBar select,.adminFilterBar button{width:100%}}
+
   </style>
 
   <script>
@@ -225,6 +241,11 @@
       <div class="homeHero">
         <div class="homeHeroGrid">
           <div>
+            <div id="personalWelcome" class="personalWelcome">
+              <span>Welcome back</span>
+              <b id="homeWelcomeName">SWISH Team Member</b>
+              <small id="homeWelcomeMeta">Employee ID • Wing • Designation</small>
+            </div>
             <span class="eyebrow">⚡ Internal Learning System</span>
             <h1>SWISH Training Portal</h1>
             <p class="lead">প্রোডাক্ট USP, avatar-wise pitch, tiles knowledge, consignment-wise study এবং self evaluation—সব এক জায়গায়। Future-ready learning experience for Sales, BD & Hotline teams.</p>
@@ -340,11 +361,30 @@
           </div>
 
           <div class="adminKpiGrid">
-            <div class="adminKpi"><b id="adminKpiTotal">–</b><span>Total directory users</span></div>
+            <div class="adminKpi"><b id="adminKpiTotal">–</b><span>Visible report users</span></div>
             <div class="adminKpi"><b id="adminKpiAuth">–</b><span>Login accounts created</span></div>
             <div class="adminKpi"><b id="adminKpiCompleted">–</b><span>57B study completed</span></div>
             <div class="adminKpi"><b id="adminKpiAvgProduct">–</b><span>Avg product score</span></div>
             <div class="adminKpi"><b id="adminKpiActive7">–</b><span>Last 7 days active</span></div>
+          </div>
+
+          <div class="adminFilterBar">
+            <label><input type="checkbox" id="hideTestUsers" checked> Hide test users</label>
+            <select id="adminWingFilter"><option value="">All Wings</option></select>
+            <select id="adminStatusFilter">
+              <option value="">All Status</option>
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Study Complete">Study Complete</option>
+              <option value="Evaluation Done">Evaluation Done</option>
+            </select>
+            <button id="clearAdminFiltersBtn" type="button">Reset Filters</button>
+          </div>
+
+          <div class="adminInsightGrid">
+            <div class="adminInsight"><b class="adminGood">Top Performers</b><p id="adminTopPerformers">Loading...</p></div>
+            <div class="adminInsight"><b class="adminFollow">Needs Follow-up</b><p id="adminNeedsFollowup">Loading...</p></div>
+            <div class="adminInsight"><b class="adminRisk">Account Setup</b><p id="adminNoAccount">Loading...</p></div>
           </div>
 
           <div class="adminConsignmentGrid">
@@ -711,7 +751,8 @@
     function updateAuthBar(){
       const bar=$('authUserBar');
       const homeBadge=$('homeUserBadge');
-      const label = portalProfile ? `Logged in: ${esc(portalProfile.employee_id || '')} • ${esc(authDisplayName())} • ${esc(authTeam())}` : 'Login required';
+      const authMeta = portalProfile ? [portalProfile.employee_id || '', authDisplayName(), portalProfile.designation || '', portalProfile.wing || authTeam()].filter(Boolean).map(esc).join(' • ') : '';
+      const label = portalProfile ? `Logged in: ${authMeta}` : 'Login required';
       if(bar){
         if(!portalProfile){
           bar.innerHTML = '<span class="tag">Login required</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>';
@@ -743,6 +784,11 @@
       }
       const bp=$('homeBestProductScore'); if(bp) bp.textContent = state.best ? (state.best.score + '/' + state.best.total) : '–';
       const bt=$('homeBestTilesScore'); if(bt) bt.textContent = window.tilesBestScoreText ? window.tilesBestScoreText() : '–';
+      const wn=$('homeWelcomeName'), wm=$('homeWelcomeMeta');
+      if(wn && portalProfile) wn.textContent = authDisplayName();
+      if(wm && portalProfile){
+        wm.textContent = [portalProfile.designation || '', portalProfile.wing || authTeam(), portalProfile.employee_id ? ('Employee ID: '+portalProfile.employee_id) : ''].filter(Boolean).join(' • ');
+      }
     }
     function applyRoleVisibility(){
       document.querySelectorAll('.adminOnly,.adminNav').forEach(function(el){
@@ -953,6 +999,10 @@
       const lastLogin = {};
       logRows.forEach(function(l){ if(!lastLogin[l.user_id]) lastLogin[l.user_id]=l.created_at; });
 
+      function isTestUser(d){
+        const text = [d.employee_id,d.full_name,d.wing,d.team,d.designation].join(' ').toLowerCase();
+        return d.employee_id === '2026' || text.includes('test participant') || text.includes('demo user') || text.includes('testing');
+      }
       function scoreText(e){ return e ? esc(e.score+'/'+e.total) : '–'; }
       function lastLoginText(userId){ return userId && lastLogin[userId] ? new Date(lastLogin[userId]).toLocaleString() : '–'; }
       function tilesPct(pr){
@@ -974,30 +1024,56 @@
         const prod = p ? best[p.id+'_57B_product'] : null;
         const tiles = p ? best[p.id+'_57B_tiles'] : null;
         const status = userStatus(pr, prod, tiles, !!p);
-        return {d,p,pr,prod,tiles,status};
+        return {d,p,pr,prod,tiles,status,isTest:isTestUser(d)};
       }
 
-      const models = directoryRows.map(rowModel);
+      const allModels = directoryRows.map(rowModel);
+      const wings = [...new Set(allModels.map(function(m){ return m.d.wing || m.d.team || ''; }).filter(Boolean))].sort();
+      const wingSelect=$('adminWingFilter');
+      if(wingSelect && wingSelect.options.length <= 1){
+        const current = wingSelect.value;
+        wings.forEach(function(w){ wingSelect.insertAdjacentHTML('beforeend', `<option value="${esc(w)}">${esc(w)}</option>`); });
+        wingSelect.value = current;
+      }
+
+      const hideTest = $('hideTestUsers') ? $('hideTestUsers').checked : true;
+      const wingFilter = $('adminWingFilter') ? $('adminWingFilter').value : '';
+      const statusFilter = $('adminStatusFilter') ? $('adminStatusFilter').value : '';
+
+      let models = allModels.filter(function(m){
+        if(hideTest && m.isTest) return false;
+        if(wingFilter && (m.d.wing || m.d.team || '') !== wingFilter) return false;
+        if(statusFilter && m.status.text !== statusFilter) return false;
+        return true;
+      });
+
       const participantModels = models.filter(function(m){ return (m.d.role || 'participant') === 'participant'; });
       const completedCount = participantModels.filter(function(m){ return Number((m.pr && m.pr.product_progress) || 0) >= 100; }).length;
-      const authCount = profileRows.length;
+      const authCount = models.filter(function(m){ return !!m.p; }).length;
       const productScores = models.map(function(m){ return m.prod ? Number(m.prod.score) : null; }).filter(function(x){ return x !== null; });
       const tilesScores = models.map(function(m){ return m.tiles ? Number(m.tiles.score) : null; }).filter(function(x){ return x !== null; });
       const avgProduct = productScores.length ? (productScores.reduce((a,b)=>a+b,0)/productScores.length).toFixed(1)+'/10' : '–';
       const avgTiles = tilesScores.length ? (tilesScores.reduce((a,b)=>a+b,0)/tilesScores.length).toFixed(1)+'/10' : '–';
       const now = Date.now();
-      const active7 = new Set(logRows.filter(function(l){ return new Date(l.created_at).getTime() >= now - 7*24*60*60*1000; }).map(function(l){ return l.user_id; })).size;
+      const visibleIds = new Set(models.map(function(m){ return m.p && m.p.id; }).filter(Boolean));
+      const active7 = new Set(logRows.filter(function(l){ return visibleIds.has(l.user_id) && new Date(l.created_at).getTime() >= now - 7*24*60*60*1000; }).map(function(l){ return l.user_id; })).size;
 
-      const kpis = {
-        adminKpiTotal: directoryRows.length,
-        adminKpiAuth: authCount,
-        adminKpiCompleted: completedCount,
-        adminKpiAvgProduct: avgProduct,
-        adminKpiActive7: active7
-      };
+      const kpis = { adminKpiTotal: models.length, adminKpiAuth: authCount, adminKpiCompleted: completedCount, adminKpiAvgProduct: avgProduct, adminKpiActive7: active7 };
       Object.keys(kpis).forEach(function(id){ const el=$(id); if(el) el.textContent=kpis[id]; });
       const c57bStudy=$('c57bStudy'); if(c57bStudy) c57bStudy.textContent='Study: '+completedCount+'/'+participantModels.length;
       const c57bEval=$('c57bEval'); if(c57bEval) c57bEval.textContent='Eval: '+productScores.length+' attempts';
+
+      function topScore(m){ return m.prod ? Number(m.prod.score) : -1; }
+      const top = participantModels.filter(function(m){ return m.prod; }).sort(function(a,b){ return topScore(b)-topScore(a); }).slice(0,3);
+      const follow = participantModels.filter(function(m){
+        const pp=Number((m.pr&&m.pr.product_progress)||0);
+        const lowScore = m.prod && Number(m.prod.score) <= 5;
+        return !m.p || m.status.text === 'Not Started' || m.status.text === 'In Progress' || lowScore;
+      }).slice(0,4);
+      const noAccount = models.filter(function(m){ return !m.p; }).length;
+      const topEl=$('adminTopPerformers'); if(topEl) topEl.innerHTML = top.length ? top.map(function(m){ return `${esc(m.d.full_name)} (${scoreText(m.prod)})`; }).join('<br>') : 'No evaluation score yet.';
+      const followEl=$('adminNeedsFollowup'); if(followEl) followEl.innerHTML = follow.length ? follow.map(function(m){ return `${esc(m.d.employee_id)} • ${esc(m.d.full_name)} • ${esc(m.status.text)}`; }).join('<br>') : 'No immediate follow-up needed.';
+      const accEl=$('adminNoAccount'); if(accEl) accEl.innerHTML = noAccount ? `${noAccount} visible users still need Auth login account.` : 'All visible users have login accounts.';
 
       function tableRow(m, compact){
         const d=m.d, p=m.p, pr=m.pr || {};
@@ -1018,9 +1094,9 @@
         return String(a.d.employee_id).localeCompare(String(b.d.employee_id));
       });
 
-      if(homeBody) homeBody.innerHTML = sorted.map(function(m){ return tableRow(m, true); }).join('');
-      if(body) body.innerHTML = sorted.map(function(m){ return tableRow(m, false); }).join('');
-      if(summary) summary.textContent = `${directoryRows.length} directory users • ${authCount} login accounts • ${evalRows.length} evaluation attempts • Avg Product Score ${avgProduct} • Avg Tiles Score ${avgTiles}`;
+      if(homeBody) homeBody.innerHTML = sorted.length ? sorted.map(function(m){ return tableRow(m, true); }).join('') : '<tr><td colspan="12">No users match the selected filters.</td></tr>';
+      if(body) body.innerHTML = sorted.length ? sorted.map(function(m){ return tableRow(m, false); }).join('') : '<tr><td colspan="13">No users match the selected filters.</td></tr>';
+      if(summary) summary.textContent = `${models.length} visible users • ${authCount} login accounts • ${evalRows.length} total evaluation attempts • Avg Product Score ${avgProduct} • Avg Tiles Score ${avgTiles}`;
     }
 
     function unique(arr){ return [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
@@ -1222,6 +1298,14 @@
       if(target.id === 'changePasswordBtn' || target.id === 'homeChangePasswordBtn') openPasswordModal();
       if(target.id === 'closePasswordModalBtn') closePasswordModal();
       if(target.id === 'refreshAdminReportBtn' || target.id === 'refreshAdminCommandBtn') loadAdminReport();
+      if(target.id === 'clearAdminFiltersBtn'){
+        e.preventDefault();
+        const h=$('hideTestUsers'), w=$('adminWingFilter'), s=$('adminStatusFilter');
+        if(h) h.checked = true;
+        if(w) w.value = '';
+        if(s) s.value = '';
+        loadAdminReport();
+      }
       if(target.id === 'backHomeBtn'){ e.preventDefault(); showHomePage(); }
       if(target.id === 'toggleConsignmentsBtn'){
         e.preventDefault();
@@ -1239,6 +1323,10 @@
       if(coming){ e.preventDefault(); showToast(coming + ' training coming soon'); }
       const route = target.getAttribute && target.getAttribute('data-home-route');
       if(route){ e.preventDefault(); showToast('This section will be added in the next phase'); }
+    });
+    ['hideTestUsers','adminWingFilter','adminStatusFilter'].forEach(function(id){
+      const el=$(id);
+      if(el) el.addEventListener('change', loadAdminReport);
     });
     if($('passwordForm')) $('passwordForm').addEventListener('submit', changePassword);
     initTrainingPortalAuth();
