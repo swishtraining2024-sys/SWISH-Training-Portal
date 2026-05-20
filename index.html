@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#060818" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home</title>
+  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home - Phase 3A Admin Command Center</title>
   <style>
     :root{
       --bg:#050714;--panel:rgba(12,20,46,.78);--panel2:rgba(16,28,64,.90);--card:rgba(13,24,58,.72);
@@ -123,6 +123,30 @@
     .backHomeBtn{background:linear-gradient(135deg,rgba(105,247,255,.18),rgba(255,217,134,.14))!important;border-color:rgba(105,247,255,.35)!important}
     @media(max-width:960px){.homeHeroGrid{grid-template-columns:1fr}.portalGrid{grid-template-columns:repeat(2,1fr)}.consignmentGrid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:620px){.homeTopbar{align-items:flex-start;flex-direction:column}.homeUser{justify-content:flex-start}.portalGrid,.consignmentGrid,.homePulse{grid-template-columns:1fr}.homeHero{padding:20px;border-radius:28px}.homeHero h1{font-size:42px}}
+
+  
+    /* Phase 3A: Admin Command Center */
+    .adminCommand{margin-top:22px;border:1px solid rgba(105,247,255,.18);background:linear-gradient(135deg,rgba(7,19,46,.72),rgba(22,13,44,.66));border-radius:30px;padding:18px;box-shadow:0 22px 70px rgba(0,0,0,.26)}
+    .adminCommandTop{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:14px}
+    .adminCommandTop h2{margin:0;font-size:28px}.adminCommandTop p{margin:6px 0 0;color:var(--muted)}
+    .adminKpiGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+    .adminKpi{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.055);border-radius:20px;padding:13px}
+    .adminKpi b{display:block;font-size:24px;color:#78f7ff}.adminKpi span{font-size:11px;color:var(--muted)}
+    .adminConsignmentGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+    .adminConsignmentCard{border:1px solid rgba(105,247,255,.16);border-radius:22px;padding:14px;background:rgba(255,255,255,.055);color:var(--text);text-align:left;cursor:pointer}
+    .adminConsignmentCard.active{border-color:rgba(105,247,255,.48);background:linear-gradient(135deg,rgba(105,247,255,.14),rgba(190,135,255,.11))}
+    .adminConsignmentCard b{font-size:24px;display:block}.adminConsignmentCard small{color:var(--muted);display:block;line-height:1.45}.adminConsignmentCard .miniStats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+    .adminConsignmentCard .miniStats span{border-radius:12px;background:rgba(255,255,255,.06);padding:7px;font-size:11px;color:#d9e8ff}
+    .adminTableMiniWrap{max-height:420px;overflow:auto;border:1px solid rgba(105,247,255,.12);border-radius:22px}
+    .adminTableMini{width:100%;border-collapse:collapse;font-size:12px;min-width:1050px}
+    .adminTableMini th{position:sticky;top:0;background:rgba(9,31,58,.95);color:#72f7ff;text-align:left;padding:10px;border-bottom:1px solid rgba(105,247,255,.13)}
+    .adminTableMini td{padding:10px;border-bottom:1px solid rgba(255,255,255,.075);color:#e8f2ff}
+    .statusPill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;border:1px solid rgba(255,255,255,.14)}
+    .statusDone{background:rgba(119,242,168,.12);color:#baffd4;border-color:rgba(119,242,168,.35)}
+    .statusProgress{background:rgba(255,217,134,.12);color:#ffd986;border-color:rgba(255,217,134,.35)}
+    .statusStart{background:rgba(255,123,154,.10);color:#ff9eb5;border-color:rgba(255,123,154,.30)}
+    @media(max-width:980px){.adminKpiGrid{grid-template-columns:repeat(2,1fr)}.adminConsignmentGrid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.adminKpiGrid,.adminConsignmentGrid{grid-template-columns:1fr}.adminCommandTop{flex-direction:column;align-items:flex-start}}
 
   </style>
 
@@ -300,6 +324,64 @@
           </button>
         </div>
       </div>
+
+      <div id="adminCommandCenter" class="homeSection adminOnly hidden">
+        <div class="adminCommand">
+          <div class="adminCommandTop">
+            <div>
+              <span class="eyebrow">📡 Management Command Center</span>
+              <h2>Overall Training Report</h2>
+              <p>সব participant, consignment progress, score এবং login activity এক জায়গায়।</p>
+            </div>
+            <div class="homeActions" style="margin:0">
+              <button id="refreshAdminCommandBtn" class="homeAction primary" type="button">Refresh Command Center</button>
+              <button class="homeAction" type="button" data-open-section="admin-report">Open Detailed Report</button>
+            </div>
+          </div>
+
+          <div class="adminKpiGrid">
+            <div class="adminKpi"><b id="adminKpiTotal">–</b><span>Total directory users</span></div>
+            <div class="adminKpi"><b id="adminKpiAuth">–</b><span>Login accounts created</span></div>
+            <div class="adminKpi"><b id="adminKpiCompleted">–</b><span>57B study completed</span></div>
+            <div class="adminKpi"><b id="adminKpiAvgProduct">–</b><span>Avg product score</span></div>
+            <div class="adminKpi"><b id="adminKpiActive7">–</b><span>Last 7 days active</span></div>
+          </div>
+
+          <div class="adminConsignmentGrid">
+            <button class="adminConsignmentCard" type="button" data-coming="57A">
+              <b>57A</b><small>Coming soon report module.</small>
+              <div class="miniStats"><span>Status: Future</span><span>Data: Pending</span></div>
+            </button>
+            <button class="adminConsignmentCard active" type="button" data-open-section="admin-report">
+              <b>57B Report</b><small>Active consignment: product, tiles, score and login report.</small>
+              <div class="miniStats"><span id="c57bStudy">Study: –</span><span id="c57bEval">Eval: –</span></div>
+            </button>
+            <button class="adminConsignmentCard" type="button" data-coming="57C">
+              <b>57C</b><small>Future shipment report placeholder.</small>
+              <div class="miniStats"><span>Status: Future</span><span>Data: Pending</span></div>
+            </button>
+            <button class="adminConsignmentCard" type="button" data-coming="58A">
+              <b>58A</b><small>Future shipment report placeholder.</small>
+              <div class="miniStats"><span>Status: Future</span><span>Data: Pending</span></div>
+            </button>
+          </div>
+
+          <div class="adminTableMiniWrap">
+            <table class="adminTableMini">
+              <thead>
+                <tr>
+                  <th>Employee ID</th><th>Name</th><th>Wing</th><th>Designation</th><th>Role</th>
+                  <th>Auth</th><th>57B Product</th><th>Tiles</th><th>Best Product</th><th>Best Tiles</th><th>Status</th><th>Last Login</th>
+                </tr>
+              </thead>
+              <tbody id="adminHomeReportBody">
+                <tr><td colspan="12">Admin report loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -372,8 +454,8 @@
     <section id="admin-report" class="adminOnly hidden">
       <div class="section-head">
         <div>
-          <h2>Admin Report Dashboard</h2>
-          <p class="muted">Participant login, study progress এবং self evaluation score এখানে দেখা যাবে।</p>
+          <h2>57B Consignment Report Dashboard</h2>
+          <p class="muted">এই report শুধু 57B consignment-এর participant study progress, tiles progress, self evaluation score এবং login activity দেখাবে।</p>
         </div>
         <button id="refreshAdminReportBtn" class="primary">Refresh Report</button>
       </div>
@@ -383,9 +465,9 @@
           <table class="adminTable">
             <thead>
               <tr>
-                <th>Employee ID</th><th>Name</th><th>Team</th><th>Role</th><th>Active</th>
+                <th>Employee ID</th><th>Name</th><th>Wing</th><th>Designation</th><th>Role</th><th>Active</th>
                 <th>Product Study</th><th>Tiles Features</th><th>Tiles Collection</th>
-                <th>Best Product Score</th><th>Best Tiles Score</th><th>Last Login</th>
+                <th>Best Product Score</th><th>Best Tiles Score</th><th>Status</th><th>Last Login</th>
               </tr>
             </thead>
             <tbody id="adminReportBody"></tbody>
@@ -834,33 +916,111 @@
     }
     async function loadAdminReport(){
       if(!portalProfile || portalProfile.role !== 'admin') return;
-      const body=$('adminReportBody'), summary=$('adminSummary');
-      if(summary) summary.textContent='Loading admin report...';
-      const [profilesRes, progressRes, evalRes, logRes] = await Promise.all([
-        supabaseClient.from('profiles').select('id,employee_id,email,full_name,team,role,is_active,created_at'),
+      const body=$('adminReportBody'), summary=$('adminSummary'), homeBody=$('adminHomeReportBody');
+      if(summary) summary.textContent='Loading 57B report...';
+      if(homeBody) homeBody.innerHTML='<tr><td colspan="12">Loading command center...</td></tr>';
+
+      const [directoryRes, profilesRes, progressRes, evalRes, logRes] = await Promise.all([
+        supabaseClient.from('employee_directory').select('employee_id,full_name,wing,team,designation,role,is_active').order('employee_id'),
+        supabaseClient.from('profiles').select('id,employee_id,email,full_name,team,wing,designation,role,is_active,created_at'),
         supabaseClient.from('study_progress').select('*'),
-        supabaseClient.from('evaluation_attempts').select('user_id,evaluation_type,score,total,created_at').order('created_at', {ascending:false}),
+        supabaseClient.from('evaluation_attempts').select('user_id,evaluation_type,score,total,created_at,consignment_id').order('created_at', {ascending:false}),
         supabaseClient.from('activity_logs').select('user_id,event_type,created_at').eq('event_type','login').order('created_at', {ascending:false})
       ]);
-      if(profilesRes.error){ if(summary) summary.textContent='Admin report error: '+profilesRes.error.message; return; }
+      if(directoryRes.error || profilesRes.error){
+        const msg = (directoryRes.error && directoryRes.error.message) || (profilesRes.error && profilesRes.error.message) || 'Unknown report error';
+        if(summary) summary.textContent='Admin report error: '+msg;
+        if(homeBody) homeBody.innerHTML='<tr><td colspan="12">Report error: '+esc(msg)+'</td></tr>';
+        return;
+      }
+
+      const directoryRows = directoryRes.data || [];
+      const profileRows = profilesRes.data || [];
+      const progressRows = progressRes.data || [];
+      const evalRows = evalRes.data || [];
+      const logRows = logRes.data || [];
+
+      const profileByEmp = {};
+      profileRows.forEach(function(p){ if(p.employee_id) profileByEmp[p.employee_id]=p; });
       const progressByUser = {};
-      (progressRes.data || []).forEach(function(p){ progressByUser[p.user_id]=p; });
+      progressRows.forEach(function(p){ progressByUser[p.user_id]=p; });
       const best = {};
-      (evalRes.data || []).forEach(function(e){
-        const key=e.user_id+'_'+e.evaluation_type;
+      evalRows.forEach(function(e){
+        const cid = e.consignment_id || '57B';
+        const key=e.user_id+'_'+cid+'_'+e.evaluation_type;
         if(!best[key] || e.score > best[key].score) best[key]=e;
       });
       const lastLogin = {};
-      (logRes.data || []).forEach(function(l){ if(!lastLogin[l.user_id]) lastLogin[l.user_id]=l.created_at; });
-      if(body){
-        body.innerHTML = (profilesRes.data || []).map(function(p){
-          const pr=progressByUser[p.id] || {};
-          const prod=best[p.id+'_product'];
-          const tiles=best[p.id+'_tiles'];
-          return `<tr><td>${esc(p.employee_id || '')}</td><td>${esc(p.full_name || '')}</td><td>${esc(p.team || '')}</td><td>${esc(p.role || '')}</td><td>${p.is_active?'Yes':'No'}</td><td>${pr.product_progress || 0}%</td><td>${pr.tile_feature_progress || 0}%</td><td>${pr.tile_collection_progress || 0}%</td><td>${prod ? esc(prod.score+'/'+prod.total) : '–'}</td><td>${tiles ? esc(tiles.score+'/'+tiles.total) : '–'}</td><td>${lastLogin[p.id] ? new Date(lastLogin[p.id]).toLocaleString() : '–'}</td></tr>`;
-        }).join('');
+      logRows.forEach(function(l){ if(!lastLogin[l.user_id]) lastLogin[l.user_id]=l.created_at; });
+
+      function scoreText(e){ return e ? esc(e.score+'/'+e.total) : '–'; }
+      function lastLoginText(userId){ return userId && lastLogin[userId] ? new Date(lastLogin[userId]).toLocaleString() : '–'; }
+      function tilesPct(pr){
+        if(!pr) return 0;
+        return Math.round(((Number(pr.tile_feature_progress || 0) + Number(pr.tile_collection_progress || 0)) / 2));
       }
-      if(summary) summary.textContent = `${(profilesRes.data||[]).length} users • ${(evalRes.data||[]).length} evaluation attempts`;
+      function userStatus(pr, prod, tiles, hasProfile){
+        if(!hasProfile) return {text:'Not Started', cls:'statusStart'};
+        const pp = Number((pr && pr.product_progress) || 0);
+        const tp = tilesPct(pr);
+        if(prod || tiles) return {text:'Evaluation Done', cls:'statusDone'};
+        if(pp >= 100 && tp >= 100) return {text:'Study Complete', cls:'statusDone'};
+        if(pp > 0 || tp > 0) return {text:'In Progress', cls:'statusProgress'};
+        return {text:'Not Started', cls:'statusStart'};
+      }
+      function rowModel(d){
+        const p = profileByEmp[d.employee_id];
+        const pr = p ? (progressByUser[p.id] || {}) : {};
+        const prod = p ? best[p.id+'_57B_product'] : null;
+        const tiles = p ? best[p.id+'_57B_tiles'] : null;
+        const status = userStatus(pr, prod, tiles, !!p);
+        return {d,p,pr,prod,tiles,status};
+      }
+
+      const models = directoryRows.map(rowModel);
+      const participantModels = models.filter(function(m){ return (m.d.role || 'participant') === 'participant'; });
+      const completedCount = participantModels.filter(function(m){ return Number((m.pr && m.pr.product_progress) || 0) >= 100; }).length;
+      const authCount = profileRows.length;
+      const productScores = models.map(function(m){ return m.prod ? Number(m.prod.score) : null; }).filter(function(x){ return x !== null; });
+      const tilesScores = models.map(function(m){ return m.tiles ? Number(m.tiles.score) : null; }).filter(function(x){ return x !== null; });
+      const avgProduct = productScores.length ? (productScores.reduce((a,b)=>a+b,0)/productScores.length).toFixed(1)+'/10' : '–';
+      const avgTiles = tilesScores.length ? (tilesScores.reduce((a,b)=>a+b,0)/tilesScores.length).toFixed(1)+'/10' : '–';
+      const now = Date.now();
+      const active7 = new Set(logRows.filter(function(l){ return new Date(l.created_at).getTime() >= now - 7*24*60*60*1000; }).map(function(l){ return l.user_id; })).size;
+
+      const kpis = {
+        adminKpiTotal: directoryRows.length,
+        adminKpiAuth: authCount,
+        adminKpiCompleted: completedCount,
+        adminKpiAvgProduct: avgProduct,
+        adminKpiActive7: active7
+      };
+      Object.keys(kpis).forEach(function(id){ const el=$(id); if(el) el.textContent=kpis[id]; });
+      const c57bStudy=$('c57bStudy'); if(c57bStudy) c57bStudy.textContent='Study: '+completedCount+'/'+participantModels.length;
+      const c57bEval=$('c57bEval'); if(c57bEval) c57bEval.textContent='Eval: '+productScores.length+' attempts';
+
+      function tableRow(m, compact){
+        const d=m.d, p=m.p, pr=m.pr || {};
+        const productPct = Number(pr.product_progress || 0);
+        const featurePct = Number(pr.tile_feature_progress || 0);
+        const collectionPct = Number(pr.tile_collection_progress || 0);
+        const tPct = tilesPct(pr);
+        if(compact){
+          return `<tr><td>${esc(d.employee_id || '')}</td><td>${esc(d.full_name || '')}</td><td>${esc(d.wing || d.team || '')}</td><td>${esc(d.designation || '')}</td><td>${esc(d.role || '')}</td><td>${p?'Created':'No account'}</td><td>${productPct}%</td><td>${tPct}%</td><td>${scoreText(m.prod)}</td><td>${scoreText(m.tiles)}</td><td><span class="statusPill ${m.status.cls}">${esc(m.status.text)}</span></td><td>${lastLoginText(p && p.id)}</td></tr>`;
+        }
+        return `<tr><td>${esc(d.employee_id || '')}</td><td>${esc(d.full_name || '')}</td><td>${esc(d.wing || d.team || '')}</td><td>${esc(d.designation || '')}</td><td>${esc(d.role || '')}</td><td>${d.is_active?'Yes':'No'}</td><td>${productPct}%</td><td>${featurePct}%</td><td>${collectionPct}%</td><td>${scoreText(m.prod)}</td><td>${scoreText(m.tiles)}</td><td><span class="statusPill ${m.status.cls}">${esc(m.status.text)}</span></td><td>${lastLoginText(p && p.id)}</td></tr>`;
+      }
+
+      const sorted = models.sort(function(a,b){
+        const order = {'Not Started':0,'In Progress':1,'Study Complete':2,'Evaluation Done':3};
+        const diff = (order[a.status.text] || 0) - (order[b.status.text] || 0);
+        if(diff) return diff;
+        return String(a.d.employee_id).localeCompare(String(b.d.employee_id));
+      });
+
+      if(homeBody) homeBody.innerHTML = sorted.map(function(m){ return tableRow(m, true); }).join('');
+      if(body) body.innerHTML = sorted.map(function(m){ return tableRow(m, false); }).join('');
+      if(summary) summary.textContent = `${directoryRows.length} directory users • ${authCount} login accounts • ${evalRows.length} evaluation attempts • Avg Product Score ${avgProduct} • Avg Tiles Score ${avgTiles}`;
     }
 
     function unique(arr){ return [...new Set(arr.filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
@@ -1061,7 +1221,7 @@
       if(target.id === 'logoutBtn' || target.id === 'homeLogoutBtn') logoutPortal();
       if(target.id === 'changePasswordBtn' || target.id === 'homeChangePasswordBtn') openPasswordModal();
       if(target.id === 'closePasswordModalBtn') closePasswordModal();
-      if(target.id === 'refreshAdminReportBtn') loadAdminReport();
+      if(target.id === 'refreshAdminReportBtn' || target.id === 'refreshAdminCommandBtn') loadAdminReport();
       if(target.id === 'backHomeBtn'){ e.preventDefault(); showHomePage(); }
       if(target.id === 'toggleConsignmentsBtn'){
         e.preventDefault();
