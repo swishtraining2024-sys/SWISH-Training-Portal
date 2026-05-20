@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#060818" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>57B Training Portal - Employee Login - Password Visibility</title>
+  <title>57B Training Portal - Employee Login - Password Visibility - Phase 3 Home</title>
   <style>
     :root{
       --bg:#050714;--panel:rgba(12,20,46,.78);--panel2:rgba(16,28,64,.90);--card:rgba(13,24,58,.72);
@@ -70,6 +70,60 @@
     .passwordEye{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:42px;height:38px;border-radius:12px!important;padding:0!important;margin:0!important;display:flex;align-items:center;justify-content:center;background:rgba(105,247,255,.10)!important;border:1px solid rgba(105,247,255,.30)!important;color:var(--text)!important;box-shadow:none!important;font-size:16px!important;line-height:1!important}
     .passwordEye:focus{outline:2px solid rgba(105,247,255,.45);outline-offset:2px}
 
+  
+    /* Phase 3: SWISH Training Portal Home */
+    .moduleHidden{display:none!important}
+    .homePortal{min-height:100vh;padding:26px 0 70px;position:relative;overflow:hidden}
+    .homePortal:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:
+      radial-gradient(circle at 12% 10%,rgba(105,247,255,.22),transparent 28%),
+      radial-gradient(circle at 88% 12%,rgba(190,135,255,.18),transparent 26%),
+      radial-gradient(circle at 50% 95%,rgba(255,215,128,.13),transparent 32%),
+      linear-gradient(135deg,#030511 0%,#07142c 44%,#12091f 100%)}
+    .homePortal:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.22;background-image:
+      linear-gradient(rgba(105,247,255,.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(105,247,255,.12) 1px, transparent 1px);
+      background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.85),transparent 88%)}
+    .homeShell{width:min(1180px,calc(100% - 28px));margin:0 auto}
+    .homeTopbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .homeBrand{display:flex;align-items:center;gap:12px}
+    .homeLogo{width:48px;height:48px;border-radius:18px;display:grid;place-items:center;font-weight:950;color:#07111e;background:linear-gradient(135deg,#78f7ff,#ffd986);box-shadow:0 0 38px rgba(105,247,255,.25)}
+    .homeBrand h2{margin:0;font-size:20px;letter-spacing:.4px}.homeBrand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .homeUser{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .homeHero{border:1px solid rgba(105,247,255,.20);background:linear-gradient(135deg,rgba(10,24,56,.78),rgba(17,11,38,.72));box-shadow:0 24px 90px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.04);border-radius:34px;padding:26px;position:relative;overflow:hidden}
+    .homeHero:before{content:"";position:absolute;right:-110px;top:-110px;width:320px;height:320px;border-radius:50%;background:conic-gradient(from 140deg,rgba(105,247,255,.36),rgba(255,217,134,.22),rgba(190,135,255,.26),rgba(105,247,255,.36));filter:blur(3px);opacity:.45;animation:spinOrb 20s linear infinite}
+    .homeHero:after{content:"";position:absolute;right:52px;top:48px;width:150px;height:150px;border-radius:50%;border:1px solid rgba(105,247,255,.20);box-shadow:0 0 0 22px rgba(105,247,255,.03),0 0 0 46px rgba(255,255,255,.02)}
+    @keyframes spinOrb{to{transform:rotate(360deg)}}
+    .homeHeroGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:center;position:relative;z-index:1}
+    .homeHero h1{margin:.2rem 0;font-size:clamp(34px,6vw,68px);line-height:.95;letter-spacing:-1.6px}
+    .homeHero .lead{font-size:clamp(15px,2vw,19px);color:#c9d7ee;max-width:720px;line-height:1.65}
+    .homeActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .homeAction{border:none;border-radius:18px;padding:13px 16px;font-weight:850;cursor:pointer;background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(105,247,255,.19)}
+    .homeAction.primary{background:linear-gradient(135deg,#72f7ff,#a68cff);color:#061120;border:none}
+    .homeAction.gold{background:linear-gradient(135deg,#ffd986,#ffb35e);color:#191005;border:none}
+    .homePulse{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .homeMetric{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);border-radius:22px;padding:16px;backdrop-filter:blur(10px)}
+    .homeMetric b{display:block;font-size:30px;color:#78f7ff}.homeMetric span{font-size:12px;color:var(--muted)}
+    .homeSection{margin-top:20px}
+    .homeSectionHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:20px 4px 12px}
+    .homeSectionHead h2{margin:0;font-size:26px}.homeSectionHead p{margin:5px 0 0;color:var(--muted)}
+    .portalGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .portalCard{position:relative;text-align:left;border:1px solid rgba(105,247,255,.16);background:linear-gradient(160deg,rgba(13,25,60,.78),rgba(18,13,42,.72));border-radius:26px;padding:18px;min-height:170px;color:var(--text);cursor:pointer;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.24)}
+    .portalCard:before{content:"";position:absolute;inset:-1px;background:radial-gradient(circle at top right,rgba(105,247,255,.19),transparent 38%);opacity:.8;pointer-events:none}
+    .portalCard:hover{transform:translateY(-2px);border-color:rgba(105,247,255,.34)}
+    .portalCard .icon{font-size:30px;display:block;margin-bottom:10px}.portalCard b{display:block;font-size:18px;margin-bottom:7px}.portalCard small{display:block;color:var(--muted);line-height:1.45;position:relative;z-index:1}
+    .portalCard .status{position:absolute;right:14px;top:14px;border-radius:999px;padding:5px 9px;font-size:11px;background:rgba(119,242,168,.13);border:1px solid rgba(119,242,168,.35);color:#baffd4}
+    .portalCard.disabled{opacity:.62;cursor:not-allowed}.portalCard.disabled .status{background:rgba(255,217,134,.12);border-color:rgba(255,217,134,.35);color:#ffd986}
+    .consignmentPanel{display:none;margin-top:14px;border:1px solid rgba(105,247,255,.17);background:rgba(4,10,26,.50);border-radius:28px;padding:14px}
+    .consignmentPanel.show{display:block}
+    .consignmentGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .consignmentCard{border:1px solid rgba(255,255,255,.10);border-radius:22px;padding:16px;background:rgba(255,255,255,.055);color:var(--text);text-align:left;cursor:pointer;min-height:142px}
+    .consignmentCard.active{border-color:rgba(105,247,255,.45);background:linear-gradient(135deg,rgba(105,247,255,.13),rgba(190,135,255,.11))}
+    .consignmentCard b{font-size:26px;display:block}.consignmentCard span{display:inline-block;margin:8px 0;border-radius:999px;padding:4px 8px;font-size:11px;background:rgba(255,255,255,.08)}
+    .consignmentCard p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
+    .backHomeBtn{background:linear-gradient(135deg,rgba(105,247,255,.18),rgba(255,217,134,.14))!important;border-color:rgba(105,247,255,.35)!important}
+    @media(max-width:960px){.homeHeroGrid{grid-template-columns:1fr}.portalGrid{grid-template-columns:repeat(2,1fr)}.consignmentGrid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.homeTopbar{align-items:flex-start;flex-direction:column}.homeUser{justify-content:flex-start}.portalGrid,.consignmentGrid,.homePulse{grid-template-columns:1fr}.homeHero{padding:20px;border-radius:28px}.homeHero h1{font-size:42px}}
+
   </style>
 
   <script>
@@ -126,6 +180,130 @@
     </div>
   </div>
 
+
+  <section id="homePortal" class="homePortal hidden">
+    <div class="homeShell">
+      <div class="homeTopbar">
+        <div class="homeBrand">
+          <div class="homeLogo">S</div>
+          <div>
+            <h2>SWISH Training Portal</h2>
+            <p>Product Knowledge • Consignment Training • Self Evaluation</p>
+          </div>
+        </div>
+        <div class="homeUser">
+          <span id="homeUserBadge" class="tag success">Logged in</span>
+          <button id="homeChangePasswordBtn" type="button">🔑 Change Password</button>
+          <button id="homeLogoutBtn" type="button" class="danger">Logout</button>
+        </div>
+      </div>
+
+      <div class="homeHero">
+        <div class="homeHeroGrid">
+          <div>
+            <span class="eyebrow">⚡ Internal Learning System</span>
+            <h1>SWISH Training Portal</h1>
+            <p class="lead">প্রোডাক্ট USP, avatar-wise pitch, tiles knowledge, consignment-wise study এবং self evaluation—সব এক জায়গায়। Future-ready learning experience for Sales, BD & Hotline teams.</p>
+            <div class="homeActions">
+              <button class="homeAction primary" id="toggleConsignmentsBtn">📦 কন্সাইনমেন্ট খুলুন</button>
+              <button class="homeAction" data-home-route="product-library">🧩 Product Library</button>
+              <button class="homeAction gold" data-open-consignment="57B">🚀 Continue 57B Training</button>
+              <button class="homeAction" data-home-route="my-progress">📊 My Progress</button>
+            </div>
+          </div>
+          <div class="homePulse">
+            <div class="homeMetric"><b id="homeProductProgress">0%</b><span>57B Product Study</span></div>
+            <div class="homeMetric"><b id="homeTilesProgress">0%</b><span>Tiles Learning</span></div>
+            <div class="homeMetric"><b id="homeBestProductScore">–</b><span>Best Product Score</span></div>
+            <div class="homeMetric"><b id="homeBestTilesScore">–</b><span>Best Tiles Score</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="homeSection">
+        <div class="homeSectionHead">
+          <div>
+            <h2>কন্সাইনমেন্ট ট্রেনিং</h2>
+            <p>Participant প্রয়োজন অনুযায়ী consignment select করে study করবে।</p>
+          </div>
+          <span class="tag">Phase 3 Home</span>
+        </div>
+        <div id="consignmentPanel" class="consignmentPanel show">
+          <div class="consignmentGrid">
+            <button class="consignmentCard disabled" data-coming="57A">
+              <b>57A</b><span>Coming soon</span>
+              <p>57A training content add হলে এখানে active হবে।</p>
+            </button>
+            <button class="consignmentCard active" data-open-consignment="57B">
+              <b>57B</b><span>Active module</span>
+              <p>26 products, tiles study, design inspiration এবং self evaluation.</p>
+            </button>
+            <button class="consignmentCard disabled" data-coming="57C">
+              <b>57C</b><span>Future</span>
+              <p>Future shipment training module placeholder.</p>
+            </button>
+            <button class="consignmentCard disabled" data-coming="58A">
+              <b>58A</b><span>Future</span>
+              <p>Next consignment structure ready থাকবে।</p>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="homeSection">
+        <div class="homeSectionHead">
+          <div>
+            <h2>Learning Zones</h2>
+            <p>Future portal structure—ধীরে ধীরে সব product line এখানে add হবে।</p>
+          </div>
+        </div>
+        <div class="portalGrid">
+          <button class="portalCard" data-open-consignment="57B">
+            <span class="status">Active</span><span class="icon">📦</span>
+            <b>Consignment Training</b>
+            <small>57B active আছে। 57A/57C/58A future module হিসেবে add করা যাবে।</small>
+          </button>
+          <button class="portalCard disabled" data-home-route="product-library">
+            <span class="status">Next phase</span><span class="icon">🧩</span>
+            <b>Product Library</b>
+            <small>Commode, Basin, Shower, Kitchen, Tiles—category-wise product knowledge.</small>
+          </button>
+          <button class="portalCard" data-open-section="tile-collection">
+            <span class="status">57B</span><span class="icon">🎨</span>
+            <b>Tiles Design Inspiration</b>
+            <small>Tile image, model, design story, best use area এবং sales pitch.</small>
+          </button>
+          <button class="portalCard" data-open-section="sale-evaluation">
+            <span class="status">57B</span><span class="icon">🧪</span>
+            <b>Self Evaluation</b>
+            <small>Study complete হলে product ও tiles self evaluation দিয়ে score save হবে।</small>
+          </button>
+          <button class="portalCard" data-open-section="new-products">
+            <span class="status">Priority</span><span class="icon">🆕</span>
+            <b>New Product Spotlight</b>
+            <small>HS 0100118-81, MS 0800133-81, WC 0100164-00, FS 0200124-00.</small>
+          </button>
+          <button class="portalCard disabled" data-home-route="my-progress">
+            <span class="status">Improving</span><span class="icon">📊</span>
+            <b>My Progress</b>
+            <small>Study progress summary এখন home metrics-এ দেখাবে; detailed page future phase.</small>
+          </button>
+          <button class="portalCard adminOnly hidden" data-open-section="admin-report">
+            <span class="status">Admin</span><span class="icon">📈</span>
+            <b>Admin Report</b>
+            <small>Participant progress, login activity এবং self evaluation score report.</small>
+          </button>
+          <button class="portalCard disabled" data-home-route="notice">
+            <span class="status">Future</span><span class="icon">📣</span>
+            <b>Notice & Updates</b>
+            <small>New shipment, role-play task, quiz announcement future-এ add করা যাবে।</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <header class="hero wrap" id="top">
     <div class="glass">
       <div class="hero-inner">
@@ -134,6 +312,7 @@
           <h1>57B Study Dashboard</h1>
           <p class="subtitle">Product image, USP, avatar profiling, formula guide, study progress এবং ১০ মার্ক auto-result সেল্ফ ইভালুয়েশন—সব এক HTML ফাইলে।</p>
           <div class="actions">
+            <button id="backHomeBtn" type="button" class="backHomeBtn">⌂ Home</button>
             <a class="btn primary" href="#products">📚 Study Products</a>
             <a class="btn" href="#new-products">🆕 New Products</a>
             <a class="btn" href="#sale-evaluation">🧪 Product Self Evaluation</a><a class="btn" href="#tiles-study">🧱 Tiles Study</a><a class="btn" href="#tile-collection">🎨 Tiles Collection</a>
@@ -449,16 +628,46 @@
     }
     function updateAuthBar(){
       const bar=$('authUserBar');
-      if(!bar) return;
-      if(!portalProfile){
-        bar.innerHTML = '<span class="tag">Login required</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>';
-      } else {
-        bar.innerHTML = `<span class="tag success">Logged in: ${esc(portalProfile.employee_id || '')} • ${esc(authDisplayName())} • ${esc(authTeam())}</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>`;
+      const homeBadge=$('homeUserBadge');
+      const label = portalProfile ? `Logged in: ${esc(portalProfile.employee_id || '')} • ${esc(authDisplayName())} • ${esc(authTeam())}` : 'Login required';
+      if(bar){
+        if(!portalProfile){
+          bar.innerHTML = '<span class="tag">Login required</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>';
+        } else {
+          bar.innerHTML = `<span class="tag success">${label}</span><button id="changePasswordBtn" type="button">🔑 Change Password</button><button id="logoutBtn" type="button" class="danger">Logout</button>`;
+        }
       }
+      if(homeBadge) homeBadge.textContent = label;
     }
-    function showDashboardForAuth(){
-      const gate=$('authGate'); if(gate) gate.classList.add('hidden');
-      updateAuthBar();
+    function setTrainingModuleVisible(open){
+      const hero = document.querySelector('header.hero');
+      const sticky = document.querySelector('.sticky');
+      const main = document.querySelector('main.wrap');
+      [hero, sticky, main].forEach(function(el){
+        if(!el) return;
+        if(open) el.classList.remove('moduleHidden'); else el.classList.add('moduleHidden');
+      });
+    }
+    function updateHomeMetrics(){
+      const productTotal = (DATA.products || []).length || 1;
+      const productPct = Math.round((done.size / productTotal) * 100);
+      const hp=$('homeProductProgress'); if(hp) hp.textContent = productPct + '%';
+      if(window.getTilesProgress){
+        const tp = window.getTilesProgress();
+        const fTotal = window.TILE_FEATURE_COUNT || 9;
+        const cTotal = window.TILE_COLLECTION_COUNT || 11;
+        const combined = Math.round((((tp.features || []).length + (tp.collections || []).length) / (fTotal + cTotal)) * 100);
+        const ht=$('homeTilesProgress'); if(ht) ht.textContent = combined + '%';
+      }
+      const bp=$('homeBestProductScore'); if(bp) bp.textContent = state.best ? (state.best.score + '/' + state.best.total) : '–';
+      const bt=$('homeBestTilesScore'); if(bt) bt.textContent = window.tilesBestScoreText ? window.tilesBestScoreText() : '–';
+    }
+    function applyRoleVisibility(){
+      document.querySelectorAll('.adminOnly,.adminNav').forEach(function(el){
+        if(portalProfile && portalProfile.role === 'admin') el.classList.remove('hidden'); else el.classList.add('hidden');
+      });
+    }
+    function prepareUserContext(){
       if(portalProfile){
         state.participant = { name: authDisplayName(), team: authTeam() };
         const pn=$('participantName'), pt=$('participantTeam'), tf=$('teamFilter');
@@ -468,13 +677,36 @@
         updateParticipantLine();
         renderProducts();
       }
-      document.querySelectorAll('.adminOnly,.adminNav').forEach(function(el){
-        if(portalProfile && portalProfile.role === 'admin') el.classList.remove('hidden'); else el.classList.add('hidden');
-      });
+    }
+    function showHomePage(){
+      const gate=$('authGate'); if(gate) gate.classList.add('hidden');
+      const home=$('homePortal'); if(home) home.classList.remove('hidden');
+      setTrainingModuleVisible(false);
+      updateAuthBar();
+      prepareUserContext();
+      applyRoleVisibility();
+      updateHomeMetrics();
+      window.scrollTo({top:0,behavior:'smooth'});
       if(portalProfile && portalProfile.role === 'admin') loadAdminReport();
+    }
+    function openTrainingModule(targetId){
+      const home=$('homePortal'); if(home) home.classList.add('hidden');
+      setTrainingModuleVisible(true);
+      updateAuthBar();
+      prepareUserContext();
+      applyRoleVisibility();
+      updateHomeMetrics();
+      const target = targetId ? document.getElementById(targetId) : document.getElementById('guide');
+      setTimeout(function(){ if(target) target.scrollIntoView({behavior:'smooth', block:'start'}); }, 80);
+      if(portalProfile && portalProfile.role === 'admin') loadAdminReport();
+    }
+    function showDashboardForAuth(){
+      showHomePage();
     }
     function showLoginGate(){
       const gate=$('authGate'); if(gate) gate.classList.remove('hidden');
+      const home=$('homePortal'); if(home) home.classList.add('hidden');
+      setTrainingModuleVisible(false);
       updateAuthBar();
     }
     async function loadRemoteProgress(){
@@ -824,10 +1056,29 @@
     if($('accessGate')) $('accessGate').classList.add('hidden');
     if($('loginForm')) $('loginForm').addEventListener('submit', loginWithEmployeeId);
     document.addEventListener('click', function(e){
-      if(e.target && e.target.id === 'logoutBtn') logoutPortal();
-      if(e.target && e.target.id === 'changePasswordBtn') openPasswordModal();
-      if(e.target && e.target.id === 'closePasswordModalBtn') closePasswordModal();
-      if(e.target && e.target.id === 'refreshAdminReportBtn') loadAdminReport();
+      const target = e.target && e.target.closest ? e.target.closest('button,a') : e.target;
+      if(!target) return;
+      if(target.id === 'logoutBtn' || target.id === 'homeLogoutBtn') logoutPortal();
+      if(target.id === 'changePasswordBtn' || target.id === 'homeChangePasswordBtn') openPasswordModal();
+      if(target.id === 'closePasswordModalBtn') closePasswordModal();
+      if(target.id === 'refreshAdminReportBtn') loadAdminReport();
+      if(target.id === 'backHomeBtn'){ e.preventDefault(); showHomePage(); }
+      if(target.id === 'toggleConsignmentsBtn'){
+        e.preventDefault();
+        const panel=$('consignmentPanel'); if(panel) panel.classList.toggle('show');
+      }
+      const consignment = target.getAttribute && target.getAttribute('data-open-consignment');
+      if(consignment){
+        e.preventDefault();
+        if(consignment === '57B') openTrainingModule('guide');
+        else showToast(consignment + ' module coming soon');
+      }
+      const section = target.getAttribute && target.getAttribute('data-open-section');
+      if(section){ e.preventDefault(); openTrainingModule(section); }
+      const coming = target.getAttribute && target.getAttribute('data-coming');
+      if(coming){ e.preventDefault(); showToast(coming + ' training coming soon'); }
+      const route = target.getAttribute && target.getAttribute('data-home-route');
+      if(route){ e.preventDefault(); showToast('This section will be added in the next phase'); }
     });
     if($('passwordForm')) $('passwordForm').addEventListener('submit', changePassword);
     initTrainingPortalAuth();
